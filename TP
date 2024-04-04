@@ -1,0 +1,720 @@
+# data() : # Retourne la liste des noms des jeux de données chargés par défaut.
+           # data()
+
+
+# ncol() : # Retourne le nombre de colonnes dans un objet (par exemple, un dataframe ou une matrice).
+           # nombre_colonnes <- ncol(objet)
+
+
+# nrow() : # Retourne le nombre de lignes dans un objet (par exemple, un dataframe ou une matrice).
+           # nombre_lignes <- nrow(objet)
+
+
+# dim() : # Retourne les dimensions (nombre de lignes et de colonnes) d'un objet (par exemple, un dataframe ou une matrice).
+          # dimensions <- dim(objet)
+
+
+# colnames() : # Retourne ou définie les noms des colonnes dans un dataframe ou une matrice.
+               # Aucun ou nouveaux noms de colonnes.
+               # noms_colonnes <- colnames(dataframe) ou colnames(dataframe) <- c("Nom1", "Nom2", ...).
+
+
+# summary()  : # Produit un résumé statistique des données dans un objet (par exemple, un vecteur, un dataframe, etc.).
+               # res <- summary(objet)
+
+
+# View() : # Ouvre une visionneuse de données pour explorer un dataframe ou une matrice dans une fenêtre séparée.
+           # Aucun	
+           # View(dataframe)
+
+
+# head() : # Affiche les premières lignes d'un dataframe ou d'une matrice.
+           # n : nombre de lignes à afficher (par défaut 6)
+           # premieres_lignes <- head(dataframe, n = 10)
+
+
+# $ : # Accéder à une colonne d'un dataframe
+      # df$colonneA
+
+
+# [ , ] : # Accéder à certaines lignes et/ou colonnes d'un datarame.
+          # dfExtraction <- df[ c(5,6), c("colonneB", "colonneD")]
+
+
+
+### EXERCICE sur les Fonctions en R
+
+
+
+# Afficher le jeu de données iris puis afficher la classe de l'objet
+iris
+class(iris)
+
+
+# Afficher le jeu de données iris dans une vue avec la fonction
+View(iris)
+
+
+# Afficher le nombre de lignes avec la fonction nrow()
+nrow(iris)
+
+
+# fficher le nombre de colonne avec la fonction ncol()
+ncol(iris)
+
+# Afficher le nom des colonnes avec la fonction colnames()
+colnames(iris)
+
+
+# Afficher un résumé du dataframe avec la fonction summary()
+summary(iris)
+
+
+# Afficher uniquement les colonnes Sepal.Length et Species.
+iris[ , c("Sepal.Length","Species")]
+
+
+# Afficher uniquement la ligne 100,103 et 105
+iris[ c(100,103,105) , ]
+
+
+# Afficher uniquement les lignes 50 à 100.
+iris[ c(50:100) , ]
+
+
+# Calculer la moyenne de la variable Sepal.Length.
+mean(iris$Sepal.Length)
+
+
+# Calculer la médiane de la variable Sepal.Width.
+median(iris$Sepal.Width)
+
+
+# Calculer l'écart-type de la variable Petal.Length.
+sd(iris$Petal.Length)
+
+
+# Calculer les déciles de la variable Petal.Width.
+quantile(iris$Petal.Width, probs = seq(0.1, 0.9, 0.1))
+
+
+
+# EXERCICE 2 - Import/Exporter un dataframe
+
+
+# read.csv() : # Lit un fichier CSV et retourne un dataframe
+               # file : le chemin ou l'URL du fichier CSV à lire, header : spécifie si la première ligne contient les noms des variables (par défaut TRUE), dec : le caractère utilisé pour indiquer le point décimal (par défaut "."), sep : le séparateur de champ (par défaut ",").
+               # donnees <- read.csv("fichier.csv", header = TRUE, dec = ",", sep = ";")
+
+
+# subset() : # Retourne un sous-ensemble d'un objet (par exemple, un dataframe) en fonction de certaines conditions.
+             # x : l'objet à sous-ensemble, subset : la condition de sous-ensemble.
+             # sous_ensemble <- subset(dataframe, condition)
+
+
+# write.table() : # Écrit un objet (par exemple, un dataframe) dans un fichier texte ou CSV.
+                  # x : l'objet à écrire, file : le nom du fichier de sortie, sep : le séparateur de champ (par défaut " "), row.names : spécifie si les noms de lignes doivent être inclus (par défaut TRUE).
+                  # write.table(dataframe, file = "output.csv", sep = ",", row.names = FALSE)
+
+
+# rbind() : # Ajoute des lignes à un dataframe existant en les liant par les colonnes.
+            # nouveau_dataframe <- rbind(dataframe1, dataframe2)
+
+
+# ! : # Opérateur logique NON, renvoie l'inverse d'une condition.
+      # subset(dataframe, !colonne8 %in% c("B","C"))
+
+
+# %in% : # Vérifie si une valeur est présente dans un vecteur ou une liste.
+         # subset(dataframe, colonne7 %in% c("valeur1", "valeur2", "valeur3"))
+
+
+# != : # Vérifie si deux valeurs sont différentes.
+       # subset(dataframe, colonne5 != "invalide")
+
+
+# | : # Opérateur logique OU, renvoie TRUE si au moins l'une des conditions est remplie.
+      # subset(dataframe, colonne3 == "oui"
+
+
+# v : # Opérateur logique ET, renvoie TRUE si les deux conditions sont remplies.
+      # subset(dataframe, colonne1 > 10 & colonne2 < 5)
+
+
+
+
+
+
+
+getwd()
+setwd("C:/Users/2018e/OneDrive/Documents/BUT SD/BUT 1/S2/Cours de R")
+dfManga <- read.csv("manga.csv", header= TRUE, sep = ",", dec = ".")
+dfAnime <- read.csv("anime.csv", header= TRUE, sep = ",", dec = ".")
+View(dfManga)
+View(dfAnime)
+dim(dfAnime)
+dim(dfManga)
+mean(dfAnime$Score)
+mean(dfManga$Score)
+sum(dfAnime$Vote)
+sum(dfManga$Vote)
+sd(dfManga$Score)
+sd(dfAnime$Score)# Le plus homogène parmi les deux jeux de données c'est celui de Manga
+quantile(dfManga$Score, probs = seq(0.1, 0.9, 0.1) )
+quantile(dfAnime$Score, probs = seq(0.1, 0.9, 0.1))
+extraction1 <- subset(dfManga, Score > 9)
+nrow(extraction1)
+extraction2 <- subset(dfManga, Vote > 200000 )
+nrow(extraction2)
+extraction3 <- subset(dfManga, Vote > 200000 & Score > 8)
+nrow(extraction3)
+extraction4 <- subset(dfManga, Score >= 7 & Score <= 8)
+effectifRating <- table(dfAnime$Rating)
+print(effectifRating)
+length(effectifRating)
+prop.table(effectifRating)
+extraction2 <- subset(dfAnime, Rating == " R - 17+ (violence & profanity)")
+nrow(extraction2)
+extraction3 <- subset(dfAnime, Rating == "R - 17+ (violence & profanity)" & Score >= 8) # subset sert à filtrer des variables
+nrow(extraction3)
+extraction4 <- subset(dfAnime, Rating != "R - 17+ (violence & profanity)")
+nrow(extraction4)
+extraction5 <- subset(dfAnime, Rating == "PG - Children et G - All Ages ")
+nrow(extraction5)
+extraction6 <- subset(defAnime, Rating != "PG - Children et G - All Ages")
+extraction6 <- subset(dfAnime, !Rating %in% c("PG - Children","G - All Ages"))
+nrow(extraction6)
+extraction7 <- subset(dfAnime, Score >= 9 | Vote > 400000)
+nrow(extraction7)
+
+##Modifier les deux dataframe en ne conservant que les variables :
+dfAnime <- dfAnime[ , c("Title","Score","Vote","Ranked")]
+dfManga <- dfManga[ , c("Title","Score","Vote","Ranked")]
+
+##Pour chaque dataframe créer une colonne Type avec pour valeur Anime ou Manga selon l'objet
+dfAnime$Type <- "Anime"
+dfManga$Type <- "Manga"
+
+##Compiler les deux dataframe avec la fonction rbind() dans un objet appelé dfConcat. Vérifier le résultat avec dans une vue
+dfConcat <- rbind(dfManga,dfAnime)
+View(dfConcat)
+###
+#### EXERCICE 1
+getwd()
+setwd("C:/Users/2018e/OneDrive/Documents/BUT SD/BUT 1/S2/Cours de R")
+### Importation du jeu des données 
+
+df<- read.csv("fao.csv", header = T, sep = ";", dec = ",")
+View(df)
+
+### Combien de pays sont présents dans ce dataset
+
+length(df$Nom)
+
+### Résumé avec les valeurs manquantes 
+
+summary(df) ## sans trier les valeurs manquantes
+
+summary(na.omit(df))## trie les valeurs manquantes
+
+
+###
+######Exercice 2
+
+## Disponibilité alimmentaire
+
+class(df$Dispo_alim)
+mean(df$Dispo_alim, na.rm = T)
+
+## Nombre d'habitant dans le monde
+sum(df$Population, na.rm = T)
+
+
+## Ecart-type
+sd(df$Prod_viande, na.rm = T)
+sd(df$Import_viande, na.rm = F)
+
+## Mediane
+
+median(df$Prod_viande, na.rm = T)
+
+## Quartile
+
+quantile(df$Dispo_alim, probs = seq(0.25, 0.5, 0.75))
+quantile(df$Dispo_alim, probs = seq(0.50, 0.5, 0.75))
+quantile(df$Dispo_alim, probs = seq(0.70))
+
+quantile(df$Import_viande, probs = seq(0.1, 0.9, 0.1))
+
+
+
+### EXERCICE 3
+
+## 5 pays les moins peuplés
+
+extract1 <- subset(df, Population <= 97096 )
+View(extract1)
+
+## 5 pays les plus peuplés
+
+extract2 <- subset(df, Population >= 212228286)
+View(extract2)
+
+## 5 pays qui produisent le plus de viande
+extract3 <- subset(df, Prod_viande >= 11226)
+View(extract3)
+
+
+## 5 pays qui importent le plus de viande
+extract4 <- subset(df, Import_viande >= 2410)
+View(extract4)
+
+
+##
+extract5 <- subset(df, Dispo_alim >= 2300)
+View(extract5)
+####### VOIR LE BAS POUR EXPLICATION DETAILLE DE CHAQUE LIGNE DE CODE 
+# La commande function()
+# premiere question 
+
+salaire_net_cadre = function(salaire_brut) {
+  
+  salaire_net_avant_impot = salaire_brut * 0.75
+  
+  return(salaire_net_avant_impot) }
+
+salaire_net_cadre(salaire_brut = 2600)
+# deuxieme question 
+
+salaire_net_cadre = function(salaire_brut=2500) {
+  
+  salaire_net_avant_impot = salaire_brut * 0.75
+  
+  return(salaire_net_avant_impot) }
+
+salaire_net_cadre()
+
+# troisième question
+
+salaire_net_cadre = function(salaire_brut = 2500,temps_travail = 1){ if(!is.numeric(salaire_brut )){return ("erreur !")} 
+  salaire_net_avant_impot = salaire_brut * temps_travail
+  return(salaire_net_avant_impot) 
+}
+salaire_net_cadre(salaire_brut = 3000,
+                  temps_travail = 0.8)
+
+# La commande else() {}
+# question 6)
+
+salaire_net = function(salaire_brut = 2500,temps_travail = 1, statut) {
+  
+  if (!is.numeric(salaire_brut)) {
+    return("Erreur :  le salaire brut doit être une valeur numérique")
+  }
+  
+  if (is.numeric(temps_travail) & (temps_travail >= 0) & (temps_travail <= 1)) {
+    return("Erreur :  le temps de travail doit être une valeur numérique entre 0 et 1")
+  }
+  
+  if (!statut %in% c("cadre","non cadre")) {
+    return("Erreur :  le statut doit être cadre ou non cadre")
+  }
+  
+  if (statut == "cadre") {
+    salaire_net_avant_impot = salaire_brut * temps_travail * 0.75
+  } else {
+    salaire_net_avant_impot = salaire_brut * temps_travail * 0.78
+  }
+  
+  return(salaire_net_avant_impot) 
+}
+#Test de la fonction
+salaire_net(salaire_brut = 2000, statut = "cadre")
+salaire_net(salaire_brut = 2000, statut = "non cadre")
+salaire_net(salaire_brut = 2000, statut = "technicien")
+
+
+# La commande else if() {}
+# question 6)
+
+salaire_net = function(salaire_brut = 2500,temps_travail = 1, statut) {
+  
+  if (!is.numeric(salaire_brut)) {
+    return("Erreur :  le salaire brut doit être une valeur numérique")
+  }
+  
+  if (is.numeric(temps_travail) & (temps_travail >= 0) & (temps_travail <= 1)) {
+    return("Erreur :  le temps de travail doit être une valeur numérique entre 0 et 1")
+  }
+  
+  if (!statut %in% c("cadre","non cadre")) {
+    return("Erreur :  le statut doit être cadre ou non cadre")
+  }
+  
+  if (statut == "cadre") {
+    salaire_net_avant_impot = salaire_brut * temps_travail * 0.75
+  } else {
+    salaire_net_avant_impot = salaire_brut * temps_travail * 0.78
+  }
+  
+  if (salaire_net_avant_impot <= 1591) {
+    salaire_net_apres_impot <- salaire_net_avant_impot
+  } else if (salaire_net_avant_impot <= 2006) {
+    salaire_net_apres_impot <- salaire_net_avant_impot * (1 - 0.029)
+  } else if (salaire_net_avant_impot <= 3476) {
+    salaire_net_apres_impot <- salaire_net_avant_impot * (1 - 0.099)
+  } else if (salaire_net_avant_impot <= 8557) {
+    salaire_net_apres_impot <- salaire_net_avant_impot * (1 - 0.20)
+  } else {
+    salaire_net_apres_impot <- salaire_net_avant_impot * (1 - 0.43)
+  }
+  
+  return(salaire_net_apres_impot) 
+}
+###############"
+
+shifumi <- function() {
+# Demander à l'utilisateur de saisir une valeur
+choix_utilisateur <- readline(prompt = "Choisissez entre pierre, papier ou ciseaux : ")
+
+# Vérifier si l'utilisateur a saisi une valeur valide
+if (choix_utilisateur %in% c("pierre", "papier", "ciseaux")) {
+  # Simuler un choix aléatoire pour l'ordinateur
+ choix_ordi <- sample(c("pierre", "papier", "ciseaux"), 1)
+  
+  # Afficher les choix de l'utilisateur et de l'ordinateur
+  cat("Votre choix :", choix_utilisateur, "\n")
+  cat("Choix de l'ordinateur :", choix_ordi, "\n")
+  
+  # Retourner le résultat du jeu
+  if (choix_utilisateur == choix_ordi) {
+    return("Égalité !")
+  } else if ((choix_utilisateur == "pierre" & choix_ordi == "ciseaux") |
+             (choix_utilisateur == "papier" & choix_ordi == "pierre") |
+             (choix_utilisateur == "ciseaux" & choix_ordi == "papier")) {
+    return("Vous avez gagné !")
+  } else {
+    return("L'ordinateur a gagné !")
+  }
+} else {
+  return("Valeur invalide. Veuillez choisir entre pierre, papier ou ciseaux.")
+}
+}
+
+#Test de la fonction
+
+shifumi()
+
+# Exercice 2 - Création des boucles
+somme=0
+for (i in c(1,2,3,4,5)) { 
+  somme=somme+i
+  print(paste("le résultat  de la somme cumulée est :",somme))
+}
+
+
+
+element = 1
+resultat = 0
+while (resultat <= 50) {
+  resultat = resultat +  element
+  print(paste("le resultat est : ",resultat))
+  print(paste("le programme s'est arrêté à la valeur : ", element))
+  element = element + 1
+}
+
+
+
+for (colonne in colnames(iris)) {
+  type_colonne = class(iris[ , colonne])
+  print(paste("la colonne ", colonne, " est de type : ", type_colonne))
+}
+
+
+
+# Initialisation de l'indice de colonne
+indice_colonne <- 1
+
+# Tant qu'il reste des colonnes à parcourir dans iris
+while (indice_colonne <= ncol(iris)) {
+  # Récupération du nom de la colonne
+  nom_colonne <- colnames(iris)[indice_colonne]
+  
+  # Récupération du type de données de la colonne
+  type_colonne <- class(iris[, nom_colonne])
+  
+  # Affichage du résultat
+  print(paste("la colonne ", nom_colonne, " est de type : ", type_colonne))
+  
+  # Passage à la colonne suivante
+  indice_colonne <- indice_colonne + 1
+}
+
+# Exercice 3 - GOAT : Cas pratiques
+
+# Boucle pour demander 5 fois un nombre à l'utilisateur
+for (i in 1:5) {
+  
+  # Demander à l'utilisateur d'entrer un nombre
+  nombre <- readline(prompt = "Entrez le nombre :")
+  nombre <- as.numeric(nombre)
+  
+  # Calculer le carré du nombre
+  carre <- nombre^2
+  
+  # Afficher le carré du nombre
+  print(paste("Le carré de", nombre, "est", carre))
+}
+
+
+
+# Chemin du dossier à explorer
+dossier <- "chemin/vers/le/dossier"
+
+# Liste les fichiers dans le dossier spécifié
+fichiers <- list.files(dossier, full.names = TRUE)
+
+# Affiche la taille de chaque fichier
+for (fichier in fichiers) {
+  info <- file.info(fichier)
+  taille <- info$size
+  cat("Le fichier", basename(fichier), "a une taille de", taille, "octets.\n")
+}
+
+
+
+# Parcourir toutes les colonnes du dataframe iris
+for (colonne in colnames(iris)) {
+  # Vérifier si la colonne est de type numeric
+  if (is.numeric(iris[,colonne])) {
+    # Si c'est le cas, construire un boxplot avec un titre
+    boxplot(iris[,colonne], main = paste("Boxplot de", colonne))
+  } else {
+    # Sinon, construire un barplot avec un titre
+    barplot(table(iris[,colonne]), main = paste("Barplot de", colonne))
+  }
+}
+
+
+# Boucle while pour jouer au shifumi jusqu'à ce que l'utilisateur décide d'arrêter
+continuer <- TRUE
+while (continuer) {
+  # Appeler la fonction shifumi et afficher le résultat
+  resultat <- shifumi()
+  cat("Résultat du jeu :", resultat, "\n")
+  
+  # Demander à l'utilisateur s'il souhaite continuer
+  reponse <- readline(prompt = "Voulez-vous continuer à jouer ? (oui/non) : ")
+  
+  # Vérifier la réponse de l'utilisateur
+  if (tolower(reponse) == "non") {
+    print("Arrêt du jeu.")
+    continuer <- FALSE  # Mettre fin à la boucle
+  }
+}
+
+# Fonction pour le jeu du juste prix
+juste_prix <- function() {
+  # Génération d'un nombre aléatoire entre 1 et 100
+  nombre_a_deviner <- sample(1:100, 1)
+  
+  # Initialisation de la réponse de l'utilisateur
+  reponse <- -1
+  
+  # Boucle tant que l'utilisateur n'a pas trouvé le bon nombre
+  while (reponse != nombre_a_deviner) {
+    # Demande à l'utilisateur de saisir un nombre
+    reponse <- as.integer(readline(prompt = "Devinez le nombre : "))
+    
+    # Vérifie si le nombre est trop grand, trop petit ou correct
+    if (reponse < nombre_a_deviner) {
+      cat("C'est plus !\n")
+    } else if (reponse > nombre_a_deviner) {
+      cat("C'est moins !\n")
+    } else {
+      cat("Bravo, vous avez trouvé le juste prix !\n")
+    }
+  }
+}
+
+# Appel de la fonction juste_prix pour commencer le jeu
+juste_prix()
+
+
+
+##### EXPLICATION DETAILLE DE CHAQUE LIGNE DE CODE 
+
+
+
+
+
+
+
+# Définition d'une fonction pour calculer le salaire net d'un cadre en fonction du salaire brut
+salaire_net_cadre = function(salaire_brut) {
+  
+  # Calcul du salaire net avant impôt en multipliant le salaire brut par 0.75
+  salaire_net_avant_impot = salaire_brut * 0.75
+  
+  # Retourne le salaire net avant impôt
+  return(salaire_net_avant_impot)
+}
+
+# Appel de la fonction avec un salaire brut de 2600
+salaire_net_cadre(salaire_brut = 2600)
+
+# Redéfinition de la fonction avec une valeur par défaut pour le salaire brut (2500)
+salaire_net_cadre = function(salaire_brut=2500) {
+  
+  # Calcul du salaire net avant impôt de la même manière que précédemment
+  salaire_net_avant_impot = salaire_brut * 0.75
+  
+  # Retourne le salaire net avant impôt
+  return(salaire_net_avant_impot)
+}
+
+# Appel de la fonction sans spécifier le salaire brut, utilisant la valeur par défaut (2500)
+salaire_net_cadre()
+
+# Redéfinition de la fonction avec deux arguments : salaire_brut et temps_travail, ce dernier ayant une valeur par défaut de 1
+salaire_net_cadre = function(salaire_brut = 2500, temps_travail = 1) {
+  
+  # Vérification si salaire_brut n'est pas de type numérique, renvoie une erreur si ce n'est pas le cas
+  if (!is.numeric(salaire_brut )) {
+    return ("erreur !")
+  }
+  
+  # Calcul du salaire net avant impôt en fonction du salaire brut et du temps de travail
+  salaire_net_avant_impot = salaire_brut * temps_travail
+  
+  # Retourne le salaire net avant impôt
+  return(salaire_net_avant_impot)
+}
+
+# Appel de la fonction avec un salaire brut de 3000 et un temps de travail de 0.8
+salaire_net_cadre(salaire_brut = 3000, temps_travail = 0.8)
+
+# La fonction salaire_net prend trois arguments : salaire_brut, temps_travail et statut
+salaire_net = function(salaire_brut = 2500, temps_travail = 1, statut) {
+  
+  # Vérification si salaire_brut n'est pas de type numérique, renvoie une erreur si ce n'est pas le cas
+  if (!is.numeric(salaire_brut)) {
+    return("Erreur :  le salaire brut doit être une valeur numérique")
+  }
+  
+  # Vérification si temps_travail est numérique et compris entre 0 et 1, renvoie une erreur si ce n'est pas le cas
+  if (is.numeric(temps_travail) & (temps_travail >= 0) & (temps_travail <= 1)) {
+    return("Erreur :  le temps de travail doit être une valeur numérique entre 0 et 1")
+  }
+  
+  # Vérification si statut est soit "cadre" soit "non cadre", renvoie une erreur si ce n'est pas le cas
+  if (!statut %in% c("cadre", "non cadre")) {
+    return("Erreur :  le statut doit être cadre ou non cadre")
+  }
+  
+  # Calcul du salaire net avant impôt en fonction du statut (cadre ou non cadre) et d'un taux spécifique
+  if (statut == "cadre") {
+    salaire_net_avant_impot = salaire_brut * temps_travail * 0.75
+  } else {
+    salaire_net_avant_impot = salaire_brut * temps_travail * 0.78
+  }
+  
+  # Si le salaire net avant impôt est inférieur ou égal à certaines valeurs, le taux d'imposition est appliqué
+  if (salaire_net_avant_impot <= 1591) {
+    salaire_net_apres_impot <- salaire_net_avant_impot
+  } else if (salaire_net_avant_impot <= 2006) {
+    salaire_net_apres_impot <- salaire_net_avant_impot * (1 - 0.029)
+  } else if (salaire_net_avant_impot <= 3476) {
+    salaire_net_apres_impot <- salaire_net_avant_impot * (1 - 0.099)
+  } else if (salaire_net_avant_impot <= 8557) {
+    salaire_net_apres_impot <- salaire_net_avant_impot * (1 - 0.20)
+  } else {
+    salaire_net_apres_impot <- salaire_net_avant_impot * (1 - 0.43)
+  }
+  
+  # Retourne le salaire net après impôt
+  return(salaire_net_apres_impot)
+}
+# La commande setwd()
+
+setwd("C:/Users/mzouzzou/Documents/GitHub/IUT_SD1/dataset/nba")
+getwd()
+
+#La commande list.files()
+
+fichiers <- list.files(path = getwd(),
+                       pattern = "\\.csv$",
+                       full.names = TRUE)
+
+#Les commandes basename() et file_path_sans_ext()
+
+basename("C:/Users/mzouzzou/Documents/GitHub/IUT_SD1/dataset/nba/common_player_info.csv")
+file_path_sans_ext("C:/Users/mzouzzou/Documents/GitHub/IUT_SD1/dataset/nba/common_player_info.csv")
+# fait apparement la même chose ..
+library(tools)
+print(fichiers[1])
+nom_fichier = basename(path = fichiers[1])
+nom_fichier_sans_extension = file_path_sans_ext(x = nom_fichier)
+print(nom_fichier_sans_extension)
+
+# La commande assign()
+
+# Lire le fichier CSV et l'affecter à une variable avec le nom du fichier
+assign(x = nom_fichier_sans_extension, 
+       value = read.csv(fichiers[1],
+                        sep = ",",
+                        dec = "."))
+#un dataframe vient d'être créé avec comme nom d'objet le nom du fichier sans extension.
+
+# La commande Sys.time()
+
+# Boucle pour lire chaque fichier CSV
+for (fichier in fichiers) {
+  # Extraire le nom du fichier sans extension
+  nom_objet <- file_path_sans_ext(basename(fichier))
+  
+  # Lire le fichier CSV et l'affecter à une variable avec le nom du fichier
+  start_time <- Sys.time()
+  assign(nom_objet, read.csv(fichier, 
+                             sep = ",",
+                             dec = "."))
+  end_time <- Sys.time()
+  # Calcul du temps écoulé
+  execution_time <- end_time - start_time
+  cat("Importation : ",nom_objet, "=" , execution_time , "\n")
+}
+
+# Exercice 2: LES JOINTURES
+
+df_x = subset(team, city == "Los Angeles", select = c("id", "city"))
+df_y = subset(game, select = c("game_id", "team_id_home"))
+dfJoin = merge(x = df_x, y = df_y, 
+               by.x = "id", 
+               by.y = "team_id_home", 
+               all.x = TRUE)
+nrow(dfJoin)
+View(dfJoin)
+
+# question 2
+df_x = dfJoin
+df_y = subset(game_info, select = c("game_id", "attendance"))
+dfJoin = merge(x = df_x, y = df_y, 
+               by = "game_id",
+               all.x = TRUE)
+mean(dfJoin$attendance, na.rm = TRUE)
+View(dfJoin)
+
+# question 3
+df_x = subset(game_summary, season == 2020,
+              select = c("game_id", "season"))
+dfJoin = merge(x = df_x, y = officials, 
+               by = "game_id",
+               all.x = TRUE)
+length(unique(dfJoin$official_id))
+View(dfJoin)
+
+# Exercice 3 - GOAT : Connexion à une database SQLite
+
+library(DBI)
+  
+mydb <- dbConnect(SQLite(), "nba.sqlite")
