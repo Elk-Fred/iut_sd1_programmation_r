@@ -1,0 +1,268 @@
+### EXERCICE 1
+
+## Importation des données
+df = read.csv(file = "velov.csv",
+              header = TRUE,
+              sep = ";", 
+              dec = "," )
+
+
+## Résumé de données
+summary(df)
+class(df$status)
+class(df$CodePostal)
+
+## Transformation des variables en facteur
+df$X.status. <- as.factor(df$status)
+df$X.CodePostal. <- as.factor(df$CodePostal)
+df$bornes = ifelse(df$capacity != (df$bikes + df$stands), "KO" , "OK")
+table(df$bornes)
+#en réalité, c'est aussi peut-être car la station est fermée OU que des usagers ont déposé leur vélo pile au moment de l'extraction.
+
+
+### EXERCICE 3
+
+## Construire le même graphique mais avec la densité plutôt que les effectifs. Supprimer l'argument break pour rétablir les classes par défaut.
+hist(x = df$capacity, 
+     main = "Distribution de \n la capacité des stations",
+     col = "red",
+     probability = TRUE,
+     xlab = "Capacity")
+
+##Ajouter la courbe densité de cette distribution à l'aide des fonctions lines() et density(). On peut mettre cette courbe en bleu en changeant la taille de la courbe avec l'argument lwd.
+lines(density(df$capacity),
+      lty = 2,
+      col = "blue",
+      lwd = 4)
+
+## Pour voir la courbe density en entier, modifier les bornes de l'axe des ordonnées de l'histogramme avec l'argument ylim. Relancer l'ensemble des commandes pour tracer à nouveau le graphique.
+hist(x = df$capacity, 
+     main = "Distribution de \n la capacité des stations",
+     col = "red",
+     probability = TRUE,
+     xlab = "Capacity",
+     ylim = c(0,0.08))
+
+lines(density(df$capacity),
+      lty = 2,
+      col = "blue",
+      lwd = 2)
+
+
+### EXERCICE 3 - LE BOXPLOT
+
+## Construire une boîte à moustache de la distribution des capacity à l'aide de la fonction boxplot(). N'oublier pas de mettre un titre.
+boxplot(x = df$capacity, 
+        main = "Boxplot de \n la capacité des stations")
+
+## Construire le même graphique mais pivoter horizontalement.
+boxplot(x = df$capacity, 
+        main = "Boxplot de \n la capacité des stations",
+        horizontal = TRUE)
+
+## Construire le même graphique en le remettant à la verticale et en n'affichant pas les valeurs atypiques.
+moy=mean(df$capacity)
+boxplot(x = df$capacity, 
+        main = "Boxplot de \n la capacité des stations",
+        horizontal = FALSE,
+        outline = FALSE
+        )
+## Ajouter un point supplémentaire qui correspond à la moyenne de la série avec la fonction points(). On souhaite que ce point soit un gros carré rouge
+
+points(moy, col = "red", pch = 15, cex = 2)
+
+## On souhaite comparer les vélos disponibles sur le 7ème et le 8ème arrondissement. Diviser la fenêtre graphique en deux puis constuire un boxplot pour ces deux arrondissement. Que peut-on dire ?
+par(mfrow=c(1,2)) #fenêtre sur 1 ligne et 2 colonnes
+#7ème
+df7 = subset(df, CodePostal == "69007")
+boxplot(x = df7$bikes, 
+        main = "Boxplot nb vélos \n 69007",
+        ylim = c(0,40))
+#8ème
+df8 = subset(df, CodePostal == "69008")
+boxplot(x = df8$bikes, 
+        main = "Boxplot nb vélos \n 69008",
+        ylim = c(0,40))
+#C'est plus simple d'analyser les deux graphiques si la borne des ordonnées est la même.
+# On remarque que la disponibilité des stations est plus homogènes sur le 8ème.
+
+## Sur le même graphique, on souhaite analyser le nombre de vélos disponibles en fonction de la variable bonus. Que peut-on dire ?
+par(mfrow=c(1,1)) #fenêtre sur 1 ligne et 1 colonne
+# Tracer le graphique boxplot
+boxplot(formula = bikes ~ bonus,
+        data = df, 
+        main = "Dispo vélos vs Stations Bonus")
+
+## Ajouter les moyennes de chaque groupes sur le graphique à l'aide de la fonction tapply() et points().
+# Calculer les moyennes de chaque groupe
+means <- tapply(X = df$bikes, 
+                INDEX = df$bonus, 
+                FUN = function(X) mean(X))
+print(means)
+# Ajouter les moyennes de chaque groupe au graphique
+points(means, col = "red", pch = 19)
+
+
+
+### EXERCICE 4 - LE DIAGRAMME
+
+## Créer un diagramme en barre de la réparition du nombre de station bonus à l'aide de la fonction barplot(). N'oublier pas de mettre un titre.
+effectif = table(df$bonus)
+barplot(height = effectif,
+        main = "Répartition du nombre \n de station bonus")
+
+## Construire le même graphique mais pivoter horizontalement.
+barplot(height = effectif,
+        main = "Répartition du nombre \n de station bonus",
+        horiz = TRUE)
+
+## Construire le même graphique mais en pourcentage.
+frequence = prop.table(effectif)
+barplot(height = frequence,
+        main = "Répartition en % du nombre \n de station bonus",
+        horiz = TRUE)
+
+## Construire un diagramme bivariés avec la répartition du nombre de station bonus en fonction du nombre de station avec un terminal de paiement. Les deux variables ayant les mêmes modalités TRUE / FALSE, il est important de définir le nom de l'axe des abscisses. Que remarque t-on ?
+effectif = table(df$banking, df$bonus)
+print(effectif)
+barplot(height = effectif,
+        main = "Bonus vs Banking",
+        xlab = "Station Bonus ?")
+#On remarque qu'on ne sait pas distinguer les deux modalités car il n'y a pas de légende.
+
+## Afficher une legend pour pouvoir distinguer les couleurs associées aux modalités avec vert pour TRUE et rouge pour FALSE. On peut vérifier si le graphique est cohérent en vérifiant avec l'objet frequence.
+#Calcul des pourcentages
+frequence = prop.table(x = effectif)
+barplot(height = frequence,
+        main = "Bonus vs Banking",
+        xlab = "Station Bonus ?",
+        col = c("red","green"))
+
+#Préparer les labels
+legend_labels <- colnames(frequence)
+#Ajouter une légende
+legend(x = "topright", 
+       legend = legend_labels, 
+       fill  = c("red","green"))
+
+#Afficher les fréquences pour vérifier le graphique
+print(frequence)
+
+## Même question mais avec un diagramme bivarié non empilé à l'aide de l'argument beside.
+#Calcul des pourcentages colonnes
+frequence = prop.table(x = effectif, margin = 2)
+barplot(height = frequence,
+        main = "Bonus vs Banking",
+        xlab = "Station Bonus ?",
+        col = c("red","green"),
+        beside = TRUE)
+
+#Préparer les labels
+legend_labels <- colnames(frequence)
+#Ajouter une légende
+legend(x = "topright", 
+       legend = legend_labels, 
+       fill  = c("red","green"))
+
+#Afficher les fréquences pour vérifier le graphique
+print(frequence)
+
+## Créer un diagramme circulaire de la réparition du nombre de station bonus à l'aide de la fonction pie() en différenciant les deux catégories avec la couleur jaune et vert. N'oublier pas de mettre un titre.
+pie(x = effectif,
+    main = "Répartition du nombre \n de station bonus",
+    col = c("yellow","green"))
+
+## Construire le même graphique à l'aide de l'argument labels et la fonction paste() afin d'ajouter les etiquettes de données avec les effectifs.
+etiquette = paste(rownames(effectif),"\n",effectif)
+pie(x = effectif,
+    main = "Répartition du nombre \n de station bonus",
+    col = c("yellow","green"),
+    labels = etiquette)
+
+
+## Construire dans un diagramme en barre le top 10 des codes postaux avec le plus de station velo'v. On peut pivoter les étiquettes à l'aide de l'argument las pour une meilleur lecture du graphique. Utiliser la fonction palette() comme couleur pour les barres. Que remarque t-on ?
+effectif = table(df$CodePostal)
+top10 = sort(effectif, decreasing = TRUE)[1:10]
+barplot(height = top10,
+        main = "Top 10 sur le \n nombre de station",
+        col = palette(),
+        las = 2)  # Rotation des étiquettes à 90 degrés
+#On remarque que les deux premières couleurs se répetent.
+print(palette()) # la fonction `palette()` ne dispose que de 8 couleurs
+
+## Même question mais avec la fonction colors(). Elle donne accès à plus de 650 couleurs.
+barplot(height = top10,
+        main = "Top 10 sur le \n nombre de station",
+        col = colors(),
+        las = 2)  # Rotation des étiquettes à 90 degrés
+
+print(colors())
+
+## Exporter ce graphique dans un format .PNG à l'aide de la fonction dev.print().
+dev.print(device = png, file = "export.png", width = 600)
+
+
+### EXERCICE 5
+
+## A l'aide de la fonction plot(), construire un nuage de point pour étudier la corrélation entre le nombre de place disponible sur les stations et leur capacité. N'oublier pas d'ajouter un titre.
+plot(x = df$stands, y = df$capacity,
+     main = "Place disponible vs Capacité")
+## Construire le même graphique en zoomant avec des abscisses et ordonnées qui vont de 0 à 60 et avec des points avec un fond noir.
+plot(x = df$stands, y = df$capacity,
+     main = "Place disponible vs Capacité",
+     xlim = c(0,60),
+     ylim = c(0,60),
+     pch=19)
+
+## Construire le même graphique en affichant deux couleurs différentes selon la colonne bornes créé précédemment. La colonne bornes doit avoir le type factor.
+df$bornes = as.factor(df$bornes)
+plot(x = df$stands, y = df$capacity,
+     main = "Place disponible vs Capacité",
+     xlim = c(0,60),
+     ylim = c(0,60),
+     col = df$bornes,
+     pch=19)
+
+# Ajouter une légende
+legend("topright", legend = levels(df$bornes),
+       col = palette(), pch = 19)
+
+## Pour pouvoir choisir ses couleurs, il suffit d'utiliser un vecteur avec les couleurs qu'on souhaite.
+myColors <- c("red", "blue", "green")  
+# Ajoutez plus de couleurs si nécessaire avec le code HTML des couleurs à la place des noms
+
+# Tracer le graphique
+plot(x = df$stands, y = df$capacity,
+     main = "Place disponible vs Capacité",
+     xlim = c(0, 60),
+     ylim = c(0, 60),
+     col = myColors[df$bornes],
+     pch = 19)
+
+# Ajouter une légende
+legend("topright", legend = levels(df$bornes),
+       col = myColors, pch = 19)
+
+## Ajouter un carré vert sur le graphique représentant la moyenne du nombre de places disponibles et la capacité des stations.
+moy_stands = mean(df$stands)
+moy_capacity = mean(df$capacity)
+points(x = moy_stands,y = moy_capacity, 
+       pch = 15,
+       col = myColors[3],
+       cex = 2)
+
+## EXERCICE 6 - Cartographie (spoil sur le SD2)
+# Librairies nécessaires
+library(leaflet)
+library(dplyr)
+library(ggplot2)
+
+# Créer une carte Leaflet
+maCarte <- leaflet(df) %>% 
+  addTiles() %>% 
+  addMarkers(~position_longitude, 
+             ~position_latitude, 
+             popup = ~address)
+
+# Afficher la carte
+maCarte
