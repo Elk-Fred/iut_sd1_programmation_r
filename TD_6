@@ -1,0 +1,136 @@
+### EXERCIE 1: Importer les données 
+getwd()
+setwd("C:/Users/2018e/OneDrive/Documents/BUT SD/BUT 1/S2/Cours/Cours de R")
+
+df <- read.csv(file = "nba2014_2015.csv", sep = ",",
+               header = TRUE, dec = ".")
+
+nrow(df) ## Permet de déterminer le nombre de ligne du fichier
+
+ncol(df) ## permet de déterminer le nombre de colonne du data frame
+
+colnames(df) ## permet de connaitre les noms des entetes des colonnes
+
+View(df)
+
+df$PERIOD <- as.factor(df$PERIOD)
+
+df$PTS_TYPE <- as.factor(df$PTS_TYPE)
+
+df$SHOOTER <- as.factor(df$SHOOTER)
+
+
+
+### EXERCICE 2 : Statistiques descriptives
+
+length(levels(df$Period))
+
+length(df$PTS_TYPE)
+
+length(df$SHOTER)
+
+summary(df)
+
+sd(df$SHOT_DIST)
+
+sd(df$SHOT_CLOCK)
+
+#combien de tirs manqués/réussis
+table(df$SHOT_RESULT)
+
+#les quartiles
+quantile(df$SHOT_CLOCK, probs = seq(0, 1, 0.25), na.rm = T)
+
+#les déciles
+quantile(df$CLOSE_DEF_DIST, probs = seq(0, 1, 0.1), na.rm = T)
+
+#nombre de matches différents
+liste_game <- unique(df$GAME_ID)
+
+length(liste_game)
+
+#nombre de joueurs différents
+df$SHOOTER <- as.factor(df$SHOOTER)
+
+levels(df$SHOOTER)
+
+#conversion de la variable SHOT_DIST en mètre pour que les européens comprennent nos chiffres
+df$SHOT_DIST_METRE <- df$SHOT_DIST * 0.30
+
+#nombre de points qu'a rapporté la tentative (0,2 ou 3)  
+df$PTS_MARQUES <- ifelse(df$SHOT_RESULT == "made", yes = df$PTS_TYPE, 0)
+help(ifelse)
+
+#On supprime la variable GAME_RESULT car elle n'est pas utile
+df$GAME_RESULT <- NULL
+
+#création d'un objet sans la première colonne GAME_ID
+df2 <- df[ ,-1]
+df2
+
+
+
+## EXERCICE 3 :  Extractions
+
+#Les 100 tirs réussis ou manqués les plus loin
+
+rang <- order(df$SHOT_DIST, decreasing = FALSE)
+
+df3 <- df[rang,]
+
+
+df3 <- df[1 : 100,]
+
+
+#Combien de tirs à 3 points a réussi Kobe Bryant ?
+df_kobe <- subset(df, df$SHOT_RESULT == "made" &
+                   df$PTS_TYPE == 3 & 
+                   df$SHOOTER == "Kobe BRYANT")
+
+dim(df_kobe)
+
+#Le TOP5 des joueurs qui ont marqués le plus de points dans la saison
+
+df_total <- aggregate(PTS_MARQUES ~ SHOOTER, data = df, FUN = sum)
+
+
+
+df_total_tri <- df_total[-order(df_total$PTS_MARQUES), decreasing = T]
+
+df_top5 <-  df_total_tri[ 1:5, ]
+
+
+
+# EXERCICE 4
+
+
+# Construction de la fonction
+build_graph <- function(une_colonne, nom_colonne) {
+  if (is.numeric(une_colonne)) {
+    print(boxplot(une_colonne, main = nom_colonne))
+  }
+  else if (is.factor(une_colonne)) {
+    tri <- table(une_colonne)
+    print(barplot(tri, main = nom_colonne))
+  }
+}
+
+help("data.frame")
+# Données de test (vous devez les remplacer par votre propre data frame)
+df <- data.frame(
+  col1 = c(1, 2, 3, 4, 5),
+  col2 = c("a", "b", "a", "c", "b")
+)
+
+# On déroule la fonction sur chaque colonne du data frame.
+for (colonne in colnames(df)) {
+  build_graph(une_colonne = df[[colonne]], nom_colonne = colonne)
+}
+
+
+#Vous devez fermer correctement les parenthèses dans la fonction build_graph.
+#Il semble que vous vouliez utiliser as.factor() pour vérifier si une colonne est de type facteur.
+#Cependant, cette utilisation n'est pas correcte dans le contexte de la vérification de type. 
+#Vous devriez plutôt utiliser is.factor().
+#Vous avez une faute de frappe dans la boucle for. Vous avez écrit colone au lieu de colonne.
+#Vous devez également déclarer le data frame df.
