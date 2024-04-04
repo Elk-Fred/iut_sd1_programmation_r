@@ -1,0 +1,165 @@
+
+# read_excel() : # Lit un fichier Excel dans R.
+                 # path : le chemin vers le fichier Excel, sheet : le nom ou l'index de la feuille à lire
+                 # readxl::read_excel(path = "/chemin/vers/votre/fichier.xlsx", sheet = "Nom_de_la_feuille")
+
+
+
+# as.factor() : # Convertit un vecteur en facteur
+                # x : le vecteur à convertir
+                # as.factor(x = c("A", "B", "A", "C"))
+
+
+
+
+##### Exercice 1 - Importer les données
+
+## Appel ddu package read_excel(read_xls)
+library(readxl)
+
+## Importation du fichier Pokemon sous format excel
+pokemon <- read_excel("pokemon.xlsx", "pokemon")
+
+## Nombre de ligne ete de colonne
+dim(pokemon)
+nrow(pokemon)
+ncol(pokemon)
+
+## résumé du Dataset 
+summary(pokemon)
+
+
+## Transformation du des variables qualitatives en variables factor
+pokemon$generation <- as.factor(pokemon$generation)
+pokemon$is_legendary <- as.factor(pokemon$is_legendary)
+pokemon$type <- as.factor(pokemon$type)
+
+## Nouveau résumé avce les nouveaux types de données
+summary(pokemon)
+
+
+
+
+#### Exercice 2 - Création de colonne
+
+
+# ifelse() : # Retourne des valeurs en fonction d'une condition.
+             # test : la condition logique à évaluer, yes : la valeur à retourner si la condition est vraie, no : la valeur à retourner si la condition est fausse
+             # ifelse(test = x > 0, yes = "Positif", no = "Négatif")
+
+
+# cut() : # Divise les valeurs numériques en intervalles.
+          # x : le vecteur de valeurs numériques à découper, breaks : les points de rupture pour diviser les valeurs, labels : les étiquettes à attribuer aux intervalles
+          # cut(x = c(1, 2, 3, 4, 5), breaks = 3, labels = c("Faible", "Moyen", "Fort"))
+
+
+# is.na() : # Vérifie si les valeurs sont manquantes (NA).
+            # le vecteur à tester
+            # is.na(x)
+
+
+
+# Exercice sur les Fonctions en R
+# Dans cet exercice, nous allons créer des colonnes supplémentaires.
+
+# La fonction ifelse().
+
+
+## Créer une colonne attack_group avec la valeur attack+ si la valeur d'attack est supérieure ou égale à la médiane, sinon attack-. Convertir cette variable en factor puis effectuer un résumé de cette colonne avec la fonction summary().
+med = median(pokemon$attack)
+pokemon$attack_group = ifelse(pokemon$attack >= med, "attack+", "attack-")
+pokemon$attack_group <- as.factor(pokemon$attack_group)
+summary(pokemon$attack_group)
+
+
+## Créer une colonne water_fire avec la valeur yes si le type est water ou fire, sinon renseigner la valeur no. Convertir cette variable en factor puis effectuer un résumé de cette colonne avec la fonction summary().
+pokemon$water_fire = ifelse(pokemon$type %in% c("water", "fire"), "yes", "no")
+
+
+## Créer une colonne best avec la valeur yes si la valeur d'attack fait parti du troisième quartile et si la valeur de defense fait parti du troisième quartile et si la valeur de speed fait parti du troisième quartile, sinon renseigner la valeur no. Convertir cette variable en factor puis effectuer un résumé de cette colonne avec la fonction summary().
+
+q3_attack = quantile(pokemon$attack, probs = 0.75)
+q3_defense = quantile(pokemon$defense, probs = 0.75)
+q3_speed = quantile(pokemon$speed, probs = 0.75)
+pokemon$best = ifelse(pokemon$attack > q3_attack & pokemon$defense > q3_defense &
+                        pokemon$speed > q3_speed, "yes", "no")
+pokemon$best <- as.factor(pokemon$best)
+summary(pokemon$best)
+
+
+## Filtrage des données ayant des valeurs manquantes dans la colonne weight_kg
+requete = subset(pokemon, is.na(weight_kg))
+View(requete)
+
+
+## Filtrage des données n'ayant des valeurs manquantes dans la colonne weight_kg
+requete = subset(pokemon, !is.na(weight_kg))
+View(requete)
+
+
+## Créer des nouvelles variables nommées weight_kgNa et height_mNA avec les mêmes valeurs pour les valeurs déjà renseignées mais en remplaçant les valeurs manquantes NA par leur valeurs médianne.
+med_weight_kg = median(pokemon$weight_kg, na.rm = TRUE)
+pokemon$weight_kgNa = ifelse(is.na(pokemon$weight_kg), med_weight_kg, pokemon$weight_kg)
+med_height_m = median(pokemon$height_m, na.rm = TRUE)
+pokemon$heightmNa = ifelse(is.na(pokemon$height_m), med_height_m, pokemon$height_m)
+
+
+
+### La fonction Cut()
+
+# Créer une nouvelle variable nommée weight_group en regroupant en 3 tranches avec les labels léger / moyen / lourd.
+pokemon$weight_group = cut(pokemon$weight_kg, breaks = 3, labels = c("éger", "moyen","lourd"))
+
+
+# Créer une nouvelle variable nommée height_m_group en regroupant en 4 tranches telles que : ]0,1] / ]1,2] / ]2,3] / ]3,max]
+pokemon$height_m_group = cut(pokemon$height_m,
+                             breaks = c(0,1,2,3,
+                                        max(pokemon$height_m,
+                                            na.rm = TRUE)))
+
+
+# Créer une nouvelle variable nommée defense_group en regroupant en 5 tranches avec les min, max et quartiles telle que : [min,Q1] / (Q1,Q2] / (Q2,Q3] / (Q3,max]. Calculer un résumé de la nouvelle colonne.
+pokemon$defense_group = cut(pokemon$defense,
+                            breaks = quantile(pokemon$defense,
+                                              na.rm = TRUE),
+                            include.lowest = TRUE)
+summary(pokemon$defense_group)
+
+
+
+### EXERCICE 3 - Agregation
+
+# aggregate() : # Effectue une opération d'agrégation sur les données groupées.
+                # formule spécifiant les variables à agréger et les variables de groupe, data : le jeu de données, FUN : la ou les fonctions d'agrégation souhaitées
+                # aggregate(x = y ~ a + b, data = dataframe, FUN = function(x) mean(x))
+
+
+
+# Exercice sur les Fonctions en R
+
+# La fonction aggregate().
+
+# Calculer la moyenne d'attack par type.
+aggregate(x = attack ~ type, 
+          data = pokemon,
+          FUN = function(x) mean(x))
+
+
+# Calculer la mediane d'attack par generation et type.
+aggregate(x = attack ~ generation + type,
+          data = pokemon, 
+          FUN = function(x) median(x))
+
+
+# Calculer l'effectif par type.
+aggregate(x = pokedex_number ~ type,
+          data = pokemon,
+          FUN = function(x) length(x))
+
+
+# Calculer la moyenne et la mediane de la statistique speed pour chaque generation et type. Afficher également les effectifs de chaque paire.
+aggregate(speed ~ generation + type,
+          data = pokemon, 
+          FUN = function(x) c(moy = mean(x),
+                              med = median(x),
+                              eff = length(x) ) )
