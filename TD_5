@@ -1,0 +1,172 @@
+# graphique vide 
+plot(c(-5,5),c(0,1))
+
+# 2e question 
+moy=c(0,0,0,-2)
+sigma=c(0.45,1,2.25,0.7)
+colors <- c("red", "blue", "green", "orange")
+legend_labels <- c()
+for (i in 1:length(moy)){ 
+  simulation=rnorm(n=1e8,
+                   mean = moy, 
+                   sd = sigma[i])
+  lines(density(simulation), col = colors[i])
+  legend_labels <- c(legend_labels, paste("m =", moy[i], ",", "s =", sigma[i]))
+}
+
+# Ajouter une légende
+legend("topright", legend=legend_labels, col=colors, lwd=2, cex=0.8)
+)
+  
+}
+legend("topright",legend=legend_labels,col=colors,lwd=2, cex=0.8)
+
+# Simuler une loi normale N(μ=0, σ=1) de taille 10 000
+rnorm(n=10000,mean=0,sd=1)
+
+# Contruire l'histograme de la distribution de la série avec sa courbe densité.
+hist(rnorm(n=10000,mean=0,sd=1),main=" loi normale N(μ=0, σ=1) de taille 10 000",probability=TRUE)
+lines(density(rnorm(n=10000,mean=0,sd=1)))
+
+# médiane de la série
+median(rnorm(n=10000,mean=0,sd=1))
+
+#quartiles de la série
+quantile(rnorm(n=10000,mean=0,sd=1))
+
+# centiles de la série. Quelle valeur de la série correspond au centile 0.95 ?
+quantile(rnorm(n=10000,mean=0,sd=1),probs = seq(0,1,0.01)) 
+quantile(rnorm(n=10000,mean=0,sd=1), 
+         probs = 0.95) # environ 1,64 
+
+#Les commandes pnorm() et qnorm()
+qnorm(p=0.95,mean=0,sd=1)
+pnorm(q= 1.644854,mean=0,sd=1)
+
+
+# valeur théorique pour P(X < x) = 0.975
+qnorm(p=0.975,mean=0,sd=1)  # la valeur vaut : 1.959964
+
+#probabilité théorique pour P(X >= 1.96) = p
+pnorm(q=1.96,mean=0,sd=1)
+
+# Exercice 2 - Construire la table de loi normale
+
+indices_lignes = seq(from = 0, to = 3.9, by = 0.1)
+
+#on crée un vecteur vide pour ajouter les probas au fur et à mesure
+
+all_probas = c()
+#On parcourt les indices lignes
+
+for (i in indices_lignes){
+  proba = pnorm(q = i, mean = 0, sd = 1)
+  #on ajoute la nouvelle proba au vecteur existant
+  
+  all_probas = c(all_probas,proba)
+  all_probas = round(all_probas,digits = 4)
+}
+
+
+
+indices_colones = seq(from = 0.00, to = 0.09, by = 0.01)
+indices_lignes = seq(from = 0, to = 3.9, by = 0.1)
+
+#On crée un objet résultat vide.
+resultat = NULL
+#On parcourt les indices colonnes
+for (j in indices_colones) {
+  #on crée un vecteur vide pour ajouter les probas au fur et à mesure
+  all_probas = c()
+  #On parcourt les indices lignes
+  for (i in indices_lignes){
+    quantile = i + j
+    proba = pnorm(q = quantile, mean = 0, sd = 1)
+    #on ajoute la nouvelle proba au vecteur existant
+    all_probas = c(all_probas,proba)
+    all_probas = round(all_probas,digits = 4)
+  }
+  #On ajoute une colonne au resultat
+  resultat = cbind(resultat,all_probas)
+}
+
+
+class(resultat)
+table = data.frame(resultat)
+colnames(table) = indices_colones
+rownames(table) = indices_lignes
+View(table)
+
+# Exercice 3 - Simulation d'une population
+
+population=rnorm(n=10000000,mean=171,sd=9)
+mean(population) # oui
+sd(population) # pratiquement
+
+hist(population)# oui car on observe une courbe en cloche 
+
+#observé
+pop190 = population[population < 190]
+length(pop190)
+length(pop190) / length(population)
+
+#en théorie
+pnorm(q = 190, mean=moyenne_pop, sd=sd_pop)*1e7
+
+#observé
+pop190 = population[population >200]
+length(pop200)
+length(pop200) / length(population)
+
+#en théorie
+pnorm(q = 200, mean=moyenne_pop, sd=sd_pop)*1e7
+
+# Exercice 4 - Simulation d'échantillon
+
+echantillon=sample(population,
+       size = 100, 
+       replace = TRUE)
+mean(echantillon)
+sd(echantillon)
+
+
+largeur<-qnorm(p = 0.975,mean=0,sd=1)*sd(population)/sqrt(100)
+borne_inf<-mean(population)-largeur
+borne_sup <-mean(population)+largeur
+
+
+#Les commandes sample() et apply()
+
+taille_ech<-100
+nb_replicat<-1000
+echantillons<-replicate(n = nb_replicat,
+                        expr =  sample(population,
+                                       taille_ech, 
+                                       replace = TRUE))
+
+moyennes<-apply(X = echantillons,
+                MARGIN = 2,
+                FUN = function(x) mean(x))
+ecart_types<-apply(echantillons,
+                   MARGIN = 2,
+                   FUN = function(x) sd(x))
+
+hist(moyennes)
+
+mean(moyennes)
+sd(moyennes)
+
+#observé
+moy172 = moyennes[moyennes > 172]
+length(moy172)
+length(moy172) / length(moyennes)
+
+#en théorie
+#proba de P( X < 172cm)
+proba_inf_172 = pnorm(q = 172, 
+                      mean=mean(population), 
+                      sd=sd(population)/sqrt(100))
+#proba de P( X >= 172cm)
+1 - proba_inf_172
+
+
