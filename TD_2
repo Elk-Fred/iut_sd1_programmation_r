@@ -1,0 +1,252 @@
+### EXERCICE 1 - Importer des données
+
+
+# read.csv() : # Lit un fichier CSV et retourne un dataframe.
+               # file : le chemin ou l'URL du fichier CSV à lire, header : spécifie si la première ligne contient les noms des variables (par défaut TRUE), dec : le caractère utilisé pour indiquer le point décimal (par défaut "."), sep : le séparateur de champ (par défaut ",", pour les tabulations "\t").
+               # donnees <- read.csv("fichier.csv", header = TRUE, dec = ",", sep = ";")
+
+
+# getwd() : # Retourne le répertoire de travail actuel.
+            # current_dir <- getwd()
+
+
+# setwd() : # Change le répertoire de travail actuel.
+            # dir : le chemin du nouveau répertoire de travail
+            # setwd("/chemin/vers/le/nouveau/repertoire")
+
+
+
+getwd()
+setwd(dir = "C:/Users/2018e/OneDrive/Documents/BUT SD/BUT 1/S2/Cours de R")
+# Il est possible de faire exactement la même chose avec le raccourci clavier CTRL + SHIFT + H.
+
+# L'intérêt de changer de répertoire est de ne pas être obliger de renseigner tout le chemin d'un fichier à importer. Uniquement le nom du fichier est ainsi suffisant. Importer les datasets avec la fonction read.csv().
+
+
+### Importations des fichiers CSV
+
+#  Pensez à ouvrir le fichier avec un bloc note pour prendre connaissance de sa configuration et ainsi bien paramétrer les arguments de la fonction read.csv().
+
+bodies_karts = read.csv(file = "bodies_karts.csv", header = T , sep =";", dec = ",")
+tires = read.csv(file = "tires.csv", header =  T , sep =  "\t", dec = ",")
+gliders = read.csv(file = "gliders.csv" , header = T , sep = "|" , dec = ".")
+drivers = read.csv(file = "drivers.csv", header = T, sep = ";" , dec = "," )
+
+
+### Afficher les dimmensions de chaque dataframe
+dim(bodies_karts)
+dim(tires)
+dim(gliders)
+dim(drivers)
+
+
+
+
+# cor() : # Calcule la corrélation entre deux vecteurs.
+          # x : le premier vecteur, y : le deuxième vecteur, method : la méthode de calcul de la corrélation (par défaut "pearson").
+          # correlation <- cor(x = vecteur1, y = vecteur2, method = "spearman")
+
+
+# plot() ; # plot()	Trace un nuage de points entre deux vecteurs.
+           # x : le premier vecteur, y : le deuxième vecteur, xlab : étiquette de l'axe des abscisses, ylab : étiquette de l'axe des ordonnées, main : titre du graphique.	
+           # plot(vecteur1, vecteur2, xlab = "Variable X", ylab = "Variable Y", main = "Nuage de points")
+
+
+# cov() : # Calcule la covariance entre deux vecteurs.
+          # x : le premier vecteur, y : le deuxième vecteur.
+          # covariance <- cov(x = vecteur1, y = vecteur2)
+
+
+# install.packages() : # Installe un package R depuis un dépôt CRAN ou local.
+                       # pkgs : le nom du package à installer, repos : l'URL du dépôt, dependencies : spécifie si les dépendances doivent également être installées (par défaut TRUE).
+                       # install.packages("nom_du_package")
+
+
+# library() : # Charge un package R déjà installé en mémoire pour être utilisé dans la session R courante.
+              # package : le nom du package à charger.
+              # library(nom_du_package)
+
+
+
+
+
+## Exercice sur les Fonctions en R
+
+# Les fonctions cor(), corrplot(), install.packages() et plot().
+
+
+### EXERCICE 2 - STATISTIQUE 
+
+### Effectuer un résumé pour chaque dataFrame
+summary(bodies_karts)
+summary(tires)
+summary(gliders)
+summary(drivers)
+
+### Afficher Drivers
+View(drivers)
+
+plot(x = drivers$Weight,
+     y = drivers$Acceleration, 
+     main = "Drivers : Weight / Acceleration")
+#Il semble que les deux variables soient corrélées négativement
+#Il y a autant de points mais ils sont superposés car certains drivers ont les mêmes statistiques
+
+### Coefficient de corrélation
+cor(x = drivers$Weight,
+    y = drivers$Acceleration)
+
+
+# Vérifier ce résultat en calculant vous même le coéfficient de corrélation.
+covXY = cov(x = drivers$Weight,
+            y = drivers$Acceleration)
+sX = sd(drivers$Weight)
+sY = sd(drivers$Acceleration)
+print(covXY / (sX*sY))
+
+
+### Calculer le coefficient de détermination de cette même relation
+
+coefCorr = cor(x = drivers$Weight,
+               y = drivers$Acceleration)
+coefDeter = coefCorr ^ 2
+print(coefDeter)
+
+matriceCor = cor(drivers[ , - 1])
+matriceCor = round(matriceCor , 2)
+View(matriceCor)
+#Toutes les variables semblent fortement corrélées entre elles.
+
+
+### Chargement Package
+#commande à executer qu'une seule fois
+install.packages("corrplot")
+
+library(corrplot) #je charge mon package pour pouvoir utiliser ses fonctionalités
+corrplot(matriceCor, method="circle")
+
+### Pour tires dataset
+matriceCor = round(cor(tires[ , - 1]),1)
+corrplot(matriceCor, method="color",  
+         type="upper", order="hclust", 
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des étiquettes de textes
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=FALSE 
+)
+
+### Pour bodies_karts dataset
+matriceCor = round(cor(bodies_karts[ , - 1]),1)
+corrplot(matriceCor, method="color",  
+         type="upper", order="hclust", 
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des étiquettes de textes
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=FALSE 
+)
+
+### gliders dataset
+
+matriceCor = round(cor(gliders[ , - 1]),1)
+corrplot(matriceCor, method="color",  
+         type="upper", order="hclust", 
+         addCoef.col = "black", # Ajout du coefficient de corrélation
+         tl.col="black", tl.srt=45, #Rotation des étiquettes de textes
+         # Cacher les coefficients de corrélation sur la diagonale
+         diag=FALSE )
+
+
+# order() : # Trie les éléments d'un vecteur et retourne les indices dans l'ordre croissant ou décroissant.
+            # x : le vecteur à trier, decreasing : spécifie si le tri doit être effectué dans l'ordre décroissant (par défaut FALSE).
+            # indices_tri <- order(vecteur, decreasing = FALSE)
+
+
+# [ , ] : # Indexe un dataframe au niveau des lignes et des colonnes.
+          # row_index : index ou condition pour sélectionner les lignes, col_index : index ou noms de colonnes pour sélectionner les colonnes.
+          # donnees_subset <- donnees[1:10, c("colonne1", "colonne2")]
+
+
+# [ - , ] : # Indexation inverse, exclut les lignes ou colonnes spécifiées.
+            # row_index : index ou condition pour exclure les lignes, col_index : index ou noms de colonnes pour exclure les colonnes.
+            # donnees_sans_colonne3 <- donnees[, -3]
+
+
+
+## Exercice sur les Fonctions en R
+## La fonction order().
+
+##
+### Exercice 3
+
+
+### Créer un object resultat avec uniquement le nom du Driver et son Weight
+resultat = drivers[, c("Driver", "Weight")]
+
+View(resultat)
+
+### Créer un object resultat avec uniquement le nom du Driver et son Acceleration sur les 10 premières lignes
+resultat = drivers[1:10,c("Driver", "Acceleration")]
+View(resultat)
+
+### Créer un object resultatsans les colonnes 5, 7 et 9
+resultat = drivers[,-c(5,7,9)]
+View(resultat)
+
+### Créer un object resultatsans les colonnes Weight et Acceleration
+resultat = drivers[ , -c("Weight","Acceleration")] #cela fonctionne uniquement sur des index numériques.
+resultat = drivers[ , -c(2,3)]
+View(resultat)
+
+### Créer un object resultat avec uniquement les colonnes Driver, Acceleration et Weight dans cet ordre. Que remarquez-vous 
+resultat = drivers[ , c("Driver", "Acceleration", "Weight")]
+View(resultat)
+#Les colonnes sont dans l'ordre défini par le vecteur.
+
+
+###Créer un object resultat avec uniquement les Driver 3 , 12 et 32 dans cet ordre.
+resultat = drivers[ c(3,12,32) , ]
+View(resultat)
+
+
+###Créer un object resultat avec uniquement les Driver 32 , 3 , 12 dans cet ordre. Que remarquez-vous
+resultat = drivers[ c(32,3,12) , ]
+View(resultat)
+#Les lignes sont dans l'ordre défini par le vecteur
+
+
+### Créer un object resultat avec uniquement les colonnes Driver et Weight en triant les conducteurs du plus léger au plus lourd avec la fonction order()
+rang = order(drivers$Weight)
+resultat = drivers[ rang  , c("Driver", "Weight") ]
+View(resultat)
+
+
+### Créer un object resultat avec uniquement les colonnes Driver et Acceleration en triant les conducteurs du plus rapide au moins rapide
+rang = order(drivers$Acceleration, decreasing = TRUE)
+resultat = drivers[ rang  , c("Driver", "Acceleration") ]
+View(resultat)
+
+
+### Créer un object resultat avec les colonnes Driver, Weight et Acceleration en triant les conducteurs du plus rapide au moins rapide puis du plus léger au plus lourd
+rang = order(drivers$Acceleration, drivers$Weight, decreasing = c(TRUE,FALSE))
+resultat = drivers[ rang  , c("Driver", "Acceleration","Weight") ]
+View(resultat)
+
+
+
+
+##
+### EXERCICE 4
+
+### Créer un object topDriver avec les colonnes Driver et Acceleration avec le ou les conducteurs avec la plus grande Acceleration
+help(subset)
+topDriver = subset(x = drivers,
+                   subset = Acceleration == max(Acceleration), 
+                   select = c("Driver","Acceleration"))
+
+
+
+### Créer un object topGlider, topTires et topBody avec la même logique de conserver uniquement les meilleurs statistiques d'Acceleration
+topGlider = subset(x = gliders,
+                   subset = Acceleration == max(Acceleration), 
+                   select = c("Glider","Acceleration"))
+
